@@ -27,75 +27,19 @@ export function Nav({ onCmdKOpen }: NavProps) {
   }
 
   return (
-    <nav
-      style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 100,
-        backdropFilter: 'blur(14px) saturate(1.2)',
-        WebkitBackdropFilter: 'blur(14px) saturate(1.2)',
-        backgroundColor: 'color-mix(in srgb, var(--bg) 88%, transparent)',
-        borderBottom: '1px solid var(--rule)',
-      }}
-    >
-      <div
-        style={{
-          maxWidth: 1240,
-          margin: '0 auto',
-          padding: '0 32px',
-          height: 56,
-          display: 'grid',
-          gridTemplateColumns: '1fr auto 1fr',
-          alignItems: 'center',
-          gap: 24,
-        }}
-      >
+    <nav className="nav-root">
+      <div className="nav-inner">
         {/* ─── Brand ─── */}
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-          {/* Marque EF */}
-          <span
-            style={{
-              width: 30, height: 30,
-              borderRadius: '50%',
-              background: 'var(--ink)',
-              color: 'var(--bg)',
-              fontFamily: 'var(--font-ui)',
-              fontSize: 11,
-              fontWeight: 600,
-              letterSpacing: '.06em',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              flexShrink: 0,
-            }}
-          >
-            EF
-          </span>
-          <span style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-            <span
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontStyle: 'italic',
-                fontSize: 16,
-                lineHeight: 1.1,
-                color: 'var(--ink)',
-              }}
-            >
-              Edwin Fom
-            </span>
-            <span
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: 10,
-                color: 'var(--ink-mute)',
-                letterSpacing: '.06em',
-              }}
-            >
-              {t('est')}
-            </span>
+        <Link href="/" className="nav-brand">
+          <span className="nav-brand-mark">EF</span>
+          <span className="nav-brand-text">
+            <span className="nav-brand-name">Edwin Fom</span>
+            <span className="nav-brand-sub">{t('est')}</span>
           </span>
         </Link>
 
         {/* ─── Liens centraux ─── */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
+        <div className="nav-center">
           {[
             { href: '/journal', label: t('writing') },
             { href: '/projets', label: t('projects') },
@@ -106,12 +50,6 @@ export function Nav({ onCmdKOpen }: NavProps) {
               href={href}
               className="nav-link"
               data-active={isActive(href) ? 'true' : 'false'}
-              style={{
-                fontFamily: 'var(--font-ui)',
-                fontSize: 14,
-                fontWeight: 500,
-                color: isActive(href) ? 'var(--accent)' : 'var(--ink-soft)',
-              }}
             >
               {label}
             </Link>
@@ -119,82 +57,21 @@ export function Nav({ onCmdKOpen }: NavProps) {
         </div>
 
         {/* ─── Actions droite ─── */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            gap: 8,
-          }}
-        >
+        <div className="nav-right">
           {/* Recherche ⌘K */}
-          <button
-            onClick={onCmdKOpen}
-            aria-label={t('open_search')}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              padding: '5px 10px',
-              border: '1px solid var(--rule)',
-              borderRadius: 4,
-              fontFamily: 'var(--font-ui)',
-              fontSize: 13,
-              color: 'var(--ink-mute)',
-              background: 'transparent',
-              cursor: 'pointer',
-              transition: 'border-color .15s, color .15s',
-            }}
-          >
+          <button onClick={onCmdKOpen} aria-label={t('open_search')} className="nav-search-btn">
             <SearchIcon />
-            <span style={{ display: 'none' }}>{t('search')}</span>
-            <kbd
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: 11,
-                background: 'var(--bg-tint)',
-                border: '1px solid var(--rule)',
-                borderRadius: 3,
-                padding: '1px 4px',
-              }}
-            >
-              ⌘K
-            </kbd>
+            <span className="sr-only">{t('search')}</span>
+            <kbd className="nav-kbd">⌘K</kbd>
           </button>
 
           {/* Toggle langue */}
-          <button
-            onClick={switchLocale}
-            aria-label={t('switch_lang')}
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: 11,
-              letterSpacing: '.08em',
-              padding: '4px 8px',
-              border: '1px solid var(--rule)',
-              borderRadius: 4,
-              color: 'var(--ink-soft)',
-              background: 'transparent',
-              cursor: 'pointer',
-              transition: 'background .15s, color .15s',
-            }}
-          >
+          <button onClick={switchLocale} aria-label={t('switch_lang')} className="nav-pill-btn">
             {locale === 'fr' ? 'EN' : 'FR'}
           </button>
 
           {/* Toggle mode */}
-          <button
-            onClick={toggleMode}
-            aria-label={t('toggle_mode')}
-            style={{
-              width: 32, height: 32,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              border: '1px solid var(--rule)',
-              borderRadius: 4,
-              color: 'var(--ink-soft)',
-              background: 'transparent',
-              cursor: 'pointer',
-              transition: 'background .15s',
-            }}
-          >
+          <button onClick={toggleMode} aria-label={t('toggle_mode')} className="nav-icon-btn">
             {mode === 'light' ? <MoonIcon /> : <SunIcon />}
           </button>
         </div>

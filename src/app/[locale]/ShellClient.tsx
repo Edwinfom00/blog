@@ -6,18 +6,22 @@ import { ThemeProvider } from '@/components/theme/ThemeProvider'
 import { Nav } from '@/components/layout/Nav'
 import { Footer } from '@/components/layout/Footer'
 import { CmdK } from '@/components/shared/CmdK'
+import { AICompanion } from '@/components/ai/AICompanion'
+import { AIProvider } from '@/components/ai/AIContext'
 
-/* On charge les données de recherche dynamiquement côté client */
 interface SearchArticle { type: 'article'; title: string; href: string; meta?: string }
 interface SearchProject { type: 'project'; title: string; href: string }
 
-export function ShellClient({ children }: { children: React.ReactNode }) {
+interface ShellClientProps {
+  children: React.ReactNode
+}
+
+export function ShellClient({ children }: ShellClientProps) {
   const locale = useLocale()
   const [cmdkOpen, setCmdkOpen] = useState(false)
   const [articles, setArticles] = useState<SearchArticle[]>([])
   const [projects, setProjects] = useState<SearchProject[]>([])
 
-  /* Ouvrir ⌘K avec le raccourci clavier */
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -29,7 +33,6 @@ export function ShellClient({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener('keydown', handler)
   }, [])
 
-  /* Charger les données search au premier open */
   const handleCmdkOpen = useCallback(async () => {
     setCmdkOpen(true)
     if (articles.length === 0) {
@@ -39,27 +42,31 @@ export function ShellClient({ children }: { children: React.ReactNode }) {
         setArticles(data.articles || [])
         setProjects(data.projects || [])
       } catch {
-        // silently fail — l'UI reste fonctionnelle
+        // silently fail
       }
     }
   }, [locale, articles.length])
 
   return (
     <ThemeProvider>
-      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        <Nav onCmdKOpen={handleCmdkOpen} />
-        <main style={{ flex: 1 }}>
-          {children}
-        </main>
-        <Footer />
-      </div>
+      <AIProvider>
+        <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+          <Nav onCmdKOpen={handleCmdkOpen} />
+          <main style={{ flex: 1 }}>
+            {children}
+          </main>
+          <Footer />
+        </div>
 
-      <CmdK
-        open={cmdkOpen}
-        onClose={() => setCmdkOpen(false)}
-        articles={articles}
-        projects={projects}
-      />
+        <CmdK
+          open={cmdkOpen}
+          onClose={() => setCmdkOpen(false)}
+          articles={articles}
+          projects={projects}
+        />
+
+        <AICompanion />
+      </AIProvider>
     </ThemeProvider>
   )
 }

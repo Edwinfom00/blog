@@ -17,7 +17,7 @@ export default async function HomePage() {
   return (
     <>
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 32px' }}>
-        <Masthead />
+        <Masthead latestIssue={heroArticle?.issue ?? latest[0]?.issue} />
       </div>
 
       {heroArticle && <HeroSection article={heroArticle} />}

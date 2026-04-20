@@ -6,6 +6,7 @@ import { TOC } from '@/components/article/TOC'
 import { ReadingProgress } from '@/components/article/ReadingProgress'
 import { ContinueReading } from '@/components/article/ContinueReading'
 import { CommentSection } from '@/components/article/CommentSection'
+import { AIArticleSync } from '@/components/ai/AIArticleSync'
 import { Link } from '@/i18n/navigation'
 import type { Metadata } from 'next'
 import type { Block } from '@/db/schema'
@@ -50,6 +51,7 @@ export default async function ArticlePage({ params }: Props) {
   return (
     <>
       <ReadingProgress />
+      <AIArticleSync title={title} dek={dek} />
 
       <div
         style={{
