@@ -128,7 +128,13 @@ export const projects = pgTable('projects', {
   sortOrder: integer('sort_order').notNull().default(0),
 })
 
-/* ─── Comments ─── */
+/* ─── Site Settings ─── */
+export const siteSettings = pgTable('site_settings', {
+  key: text('key').primaryKey(),
+  value: jsonb('value').notNull(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+})
+
 export const comments = pgTable('comments', {
   id: serial('id').primaryKey(),
   articleId: integer('article_id')
@@ -168,3 +174,4 @@ export type ArticleTag = typeof articleTags.$inferSelect
 export type Project = typeof projects.$inferSelect
 export type Comment = typeof comments.$inferSelect
 export type NewComment = typeof comments.$inferInsert
+export type SiteSetting = typeof siteSettings.$inferSelect

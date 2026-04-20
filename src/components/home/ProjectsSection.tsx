@@ -1,14 +1,9 @@
 'use client'
 
-import { useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { SectionHead } from '@/components/shared/SectionHead'
 import { StaggerReveal } from '@/components/shared/StaggerReveal'
 import type { Project } from '@/db/schema'
-
-interface ProjectsSectionProps {
-  projects: Project[]
-}
 
 const STATUS_COLORS: Record<string, string> = {
   live: '#3FA264',
@@ -16,18 +11,12 @@ const STATUS_COLORS: Record<string, string> = {
   wip: '#D9A94C',
 }
 
-export function ProjectsSection({ projects }: ProjectsSectionProps) {
+export function ProjectsSection({ projects }: { projects: Project[] }) {
   const t = useTranslations('home')
   const locale = useLocale() as 'fr' | 'en'
 
   return (
-    <section
-      style={{
-        maxWidth: 1240,
-        margin: '0 auto',
-        padding: '0 32px 96px',
-      }}
-    >
+    <section className="max-w-[1240px] mx-auto px-4 sm:px-8 pb-20 sm:pb-24">
       <SectionHead
         kicker={t('projects_kicker')}
         title={t('projects_title')}
@@ -35,123 +24,57 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
         seeAllLabel={t('all_projects')}
       />
 
-      <p
-        style={{
-          fontFamily: 'var(--font-display)',
-          fontStyle: 'italic',
-          fontSize: 16,
-          color: 'var(--ink-soft)',
-          margin: '-8px 0 24px',
-        }}
-      >
+      <p className="font-[var(--font-display)] italic text-[16px] text-[var(--ink-soft)] -mt-2 mb-6">
         {t('projects_desc')}
       </p>
 
-      {/* Liste table : dot · nom · desc · arrow */}
-      <div style={{ borderTop: '1px solid var(--rule)' }}>
-        {projects.map((project, i) => (
-          <ProjectRow
-            key={project.id}
-            project={project}
-            locale={locale}
-            index={i}
-          />
-        ))}
+      <div className="border-t border-[var(--rule)]">
+        {projects.map((project, i) => {
+          const desc = locale === 'fr' ? project.descFr : project.descEn
+          const statusColor = STATUS_COLORS[project.status] ?? 'var(--ink-mute)'
+          const isLink = project.url && project.url !== '#'
+
+          return (
+            <StaggerReveal key={project.id} delay={i * 55}>
+              <a
+                href={isLink ? project.url : undefined}
+                target={isLink ? '_blank' : undefined}
+                rel={isLink ? 'noopener noreferrer' : undefined}
+                className={[
+                  'group grid items-center gap-4 sm:gap-8',
+                  'grid-cols-[auto_1fr_auto] sm:grid-cols-[1fr_2fr_auto]',
+                  'py-4 sm:py-[18px] px-0',
+                  'border-b border-[var(--rule)]',
+                  'transition-all duration-150',
+                  'hover:bg-[var(--bg-tint)] hover:px-3',
+                  isLink ? 'cursor-pointer' : 'cursor-default',
+                ].join(' ')}
+              >
+                {/* Gauche : dot + nom */}
+                <div className="flex items-center gap-3 min-w-0">
+                  <span
+                    className="w-[7px] h-[7px] rounded-full shrink-0 inline-block"
+                    style={{ background: statusColor }}
+                  />
+                  <span className="font-[var(--font-mono)] text-[14px] font-medium text-[var(--ink)] group-hover:text-[var(--accent)] transition-colors tracking-[-0.01em] truncate">
+                    {project.name}
+                  </span>
+                </div>
+
+                {/* Centre : description — masquée sur mobile */}
+                <p className="hidden sm:block font-[var(--font-read)] italic text-[15px] leading-[1.5] text-[var(--ink-soft)] m-0 truncate">
+                  {desc}
+                </p>
+
+                {/* Droite : flèche */}
+                <span className="font-[var(--font-mono)] text-[14px] text-[var(--ink-mute)] group-hover:text-[var(--accent)] transition-colors group-hover:translate-x-0.5 group-hover:-translate-y-0.5 inline-block transition-transform">
+                  {isLink ? '↗' : '—'}
+                </span>
+              </a>
+            </StaggerReveal>
+          )
+        })}
       </div>
     </section>
-  )
-}
-
-function ProjectRow({
-  project,
-  locale,
-  index,
-}: {
-  project: Project
-  locale: 'fr' | 'en'
-  index: number
-}) {
-  const [hovered, setHovered] = useState(false)
-  const desc = locale === 'fr' ? project.descFr : project.descEn
-  const statusColor = STATUS_COLORS[project.status] ?? 'var(--ink-mute)'
-  const isLink = project.url && project.url !== '#'
-
-  return (
-    <StaggerReveal delay={index * 55}>
-      <a
-        href={isLink ? project.url : undefined}
-        target={isLink ? '_blank' : undefined}
-        rel={isLink ? 'noopener noreferrer' : undefined}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 2fr auto',
-          alignItems: 'center',
-          gap: 32,
-          padding: '18px 0',
-          borderBottom: '1px solid var(--rule)',
-          background: hovered ? 'var(--bg-tint)' : 'transparent',
-          transition: 'background .15s',
-          textDecoration: 'none',
-          cursor: isLink ? 'pointer' : 'default',
-          paddingLeft: hovered ? 8 : 0,
-        }}
-      >
-        {/* ─── Gauche : dot + nom ─── */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span
-            style={{
-              width: 7,
-              height: 7,
-              borderRadius: '50%',
-              background: statusColor,
-              flexShrink: 0,
-              display: 'inline-block',
-            }}
-          />
-          <span
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: 14,
-              fontWeight: 500,
-              color: hovered ? 'var(--accent)' : 'var(--ink)',
-              transition: 'color .15s',
-              letterSpacing: '-.01em',
-            }}
-          >
-            {project.name}
-          </span>
-        </div>
-
-        {/* ─── Centre : description italic ─── */}
-        <p
-          style={{
-            fontFamily: 'var(--font-read)',
-            fontStyle: 'italic',
-            fontSize: 15,
-            lineHeight: 1.5,
-            color: 'var(--ink-soft)',
-            margin: 0,
-          }}
-        >
-          {desc}
-        </p>
-
-        {/* ─── Droite : flèche ─── */}
-        <span
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 14,
-            color: hovered ? 'var(--accent)' : 'var(--ink-mute)',
-            transition: 'color .15s, transform .2s',
-            transform: hovered ? 'translate(2px, -2px)' : 'none',
-            display: 'inline-block',
-          }}
-        >
-          {isLink ? '↗' : '—'}
-        </span>
-      </a>
-    </StaggerReveal>
   )
 }

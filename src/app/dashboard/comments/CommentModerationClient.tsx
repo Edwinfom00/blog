@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
+import { useConfirm } from '@/hooks/useConfirm'
 import type { Comment } from '@/db/schema'
 
 interface Row {
@@ -27,7 +28,18 @@ export function CommentModerationClient({ rows }: { rows: Row[] }) {
   const pending = rows.filter(r => !r.comment.approved).length
   const approved = rows.filter(r => r.comment.approved).length
 
-  const act = async (id: number, action: 'approve' | 'reject') => {
+  const { confirm, ConfirmDialog } = useConfirm()
+
+  const act = async (id: number, action: 'approve' | 'reject', authorName?: string) => {
+    if (action === 'reject') {
+      const ok = await confirm({
+        title: 'Supprimer le commentaire',
+        message: `Supprimer le commentaire de ${authorName ?? 'cet utilisateur'} ? Cette action est irréversible.`,
+        confirmLabel: 'Supprimer',
+        danger: true,
+      })
+      if (!ok) return
+    }
     setActing(id)
     try {
       await fetch(`/api/dashboard/comments/${id}`, {
@@ -49,6 +61,7 @@ export function CommentModerationClient({ rows }: { rows: Row[] }) {
 
   return (
     <div>
+      {ConfirmDialog}
       {/* Filtres */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
         {filters.map(({ key, label, count }) => (
@@ -162,7 +175,7 @@ export function CommentModerationClient({ rows }: { rows: Row[] }) {
                   </button>
                 )}
                 <button
-                  onClick={() => act(comment.id, 'reject')}
+                  onClick={() => act(comment.id, 'reject', comment.authorName)}
                   disabled={acting === comment.id}
                   style={{
                     padding: '6px 14px',

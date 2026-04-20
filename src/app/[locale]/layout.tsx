@@ -3,6 +3,7 @@ import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { ShellClient } from './ShellClient'
+import { Footer } from '@/components/layout/Footer'
 
 interface LocaleLayoutProps {
   children: React.ReactNode
@@ -20,7 +21,9 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
-      <ShellClient>{children}</ShellClient>
+      <ShellClient footer={<Footer />}>
+        {children}
+      </ShellClient>
     </NextIntlClientProvider>
   )
 }

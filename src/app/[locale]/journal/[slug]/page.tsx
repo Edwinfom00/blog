@@ -19,11 +19,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params
   const article = await getArticleBySlug(slug)
   if (!article) return {}
-
-  const title = locale === 'fr' ? article.titleFr : article.titleEn
-  const description = locale === 'fr' ? article.dekFr : article.dekEn
-
-  return { title, description }
+  return {
+    title: locale === 'fr' ? article.titleFr : article.titleEn,
+    description: locale === 'fr' ? article.dekFr : article.dekEn,
+  }
 }
 
 export default async function ArticlePage({ params }: Props) {
@@ -32,13 +31,14 @@ export default async function ArticlePage({ params }: Props) {
 
   const [article, adjacent] = await Promise.all([
     getArticleBySlug(slug),
-    getArticleBySlug(slug).then(a => a ? getAdjacentArticles(a.issue) : { prev: null, next: null }),
+    getArticleBySlug(slug).then(a =>
+      a ? getAdjacentArticles(a.issue) : { prev: null, next: null }
+    ),
   ])
 
   if (!article) notFound()
 
   const comments = await getApprovedComments(article.id)
-
   const title = locale === 'fr' ? article.titleFr : article.titleEn
   const dek   = locale === 'fr' ? article.dekFr   : article.dekEn
   const body  = (locale === 'fr' ? article.bodyFr : article.bodyEn) as Block[]
@@ -53,53 +53,47 @@ export default async function ArticlePage({ params }: Props) {
       <ReadingProgress />
       <AIArticleSync title={title} dek={dek} />
 
-      <div
-        style={{
-          maxWidth: 1320,
-          margin: '0 auto',
-          padding: '0 32px',
-        }}
-      >
-        {/* Article grid : TOC · lecture · rail */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '220px 1fr 220px',
-            gap: 48,
-            paddingTop: 48,
-            paddingBottom: 80,
-            alignItems: 'start',
-          }}
-        >
-          {/* ─── Colonne gauche : TOC ─── */}
-          <div>
+      {/* ─── Wrapper ─── */}
+      <div className="max-w-[1320px] mx-auto px-4 sm:px-8">
+
+        {/* ─── Grille 3 colonnes
+              < 900px  → 1 col  (TOC + rail masqués)
+              900–1200 → 2 cols (TOC visible, rail masqué)
+              > 1200px → 3 cols (TOC + rail visibles)
+        ─── */}
+        <div className="
+          grid gap-8 lg:gap-12
+          grid-cols-1
+          md:grid-cols-[180px_1fr]
+          xl:grid-cols-[220px_1fr_220px]
+          pt-10 pb-20 items-start
+        ">
+
+          {/* ─── TOC — masqué < md ─── */}
+          <aside className="hidden md:block">
             <Link
               href="/journal"
-              style={{
-                display: 'flex', alignItems: 'center', gap: 6,
-                fontFamily: 'var(--font-mono)', fontSize: 11,
-                letterSpacing: '.08em', textTransform: 'uppercase',
-                color: 'var(--ink-mute)', marginBottom: 32,
-                textDecoration: 'none', transition: 'color .15s',
-              }}
+              className="flex items-center gap-1.5 font-[var(--font-mono)] text-[11px] tracking-[.08em] uppercase text-[var(--ink-mute)] mb-8 no-underline hover:text-[var(--ink)] transition-colors"
             >
               ← {t('back')}
             </Link>
             <TOC items={article.toc} />
-          </div>
+          </aside>
 
-          {/* ─── Colonne centrale : article ─── */}
-          <article style={{ maxWidth: 760 }}>
-            {/* Kicker */}
-            <div
-              style={{
-                display: 'flex', gap: 16, alignItems: 'center',
-                fontFamily: 'var(--font-mono)', fontSize: 11,
-                letterSpacing: '.1em', textTransform: 'uppercase',
-                color: 'var(--ink-mute)', marginBottom: 20,
-              }}
+          {/* ─── Corps ─── */}
+          <article className="min-w-0 max-w-[760px]">
+
+            {/* Lien retour mobile uniquement */}
+            <Link
+              href="/journal"
+              className="md:hidden flex items-center gap-1.5 font-[var(--font-mono)] text-[11px] tracking-[.08em] uppercase text-[var(--ink-mute)] mb-6 no-underline hover:text-[var(--ink)] transition-colors"
             >
-              <span style={{ color: 'var(--accent)' }}>№{article.issue}</span>
+              ← {t('back')}
+            </Link>
+
+            {/* Kicker */}
+            <div className="flex flex-wrap gap-2 sm:gap-4 items-center font-[var(--font-mono)] text-[11px] tracking-[.1em] uppercase text-[var(--ink-mute)] mb-5">
+              <span className="text-[var(--accent)]">№{article.issue}</span>
               <span>·</span>
               <time dateTime={article.date}>{formattedDate}</time>
               <span>·</span>
@@ -107,110 +101,68 @@ export default async function ArticlePage({ params }: Props) {
             </div>
 
             {/* Titre */}
-            <h1
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(32px, 4vw, 52px)',
-                fontWeight: 400,
-                letterSpacing: '-0.01em',
-                lineHeight: 1.06,
-                color: 'var(--ink)',
-                margin: '0 0 20px',
-              }}
-            >
+            <h1 className="font-[var(--font-display)] text-[clamp(28px,4vw,52px)] font-normal tracking-[-0.01em] leading-[1.06] text-[var(--ink)] mb-5">
               {title}
             </h1>
 
             {/* Dek */}
-            <p
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontStyle: 'italic',
-                fontSize: 'clamp(16px, 1.8vw, 20px)',
-                lineHeight: 1.5,
-                color: 'var(--ink-soft)',
-                margin: '0 0 40px',
-                paddingBottom: 40,
-                borderBottom: '1px solid var(--rule)',
-              }}
-            >
+            <p className="font-[var(--font-display)] italic text-[clamp(16px,1.8vw,20px)] leading-[1.5] text-[var(--ink-soft)] mb-10 pb-10 border-b border-[var(--rule)]">
               {dek}
             </p>
 
-            {/* Corps */}
+            {/* Corps article */}
             <ArticleBody blocks={body} />
 
             {/* Tags */}
-            <div
-              style={{
-                marginTop: 40,
-                paddingTop: 24,
-                borderTop: '1px solid var(--rule)',
-                display: 'flex',
-                gap: 8,
-                flexWrap: 'wrap',
-              }}
-            >
-              <span
-                style={{
-                  fontFamily: 'var(--font-mono)', fontSize: 10,
-                  letterSpacing: '.1em', textTransform: 'uppercase',
-                  color: 'var(--ink-mute)',
-                }}
-              >
+            <div className="mt-10 pt-6 border-t border-[var(--rule)] flex flex-wrap gap-2 items-center">
+              <span className="font-[var(--font-mono)] text-[10px] tracking-[.1em] uppercase text-[var(--ink-mute)]">
                 {t('filed_under')}
               </span>
               {article.tags.map(tag => (
                 <span
                   key={tag.id}
-                  style={{
-                    fontFamily: 'var(--font-mono)', fontSize: 11,
-                    padding: '2px 8px',
-                    background: 'var(--bg-tint)',
-                    border: '1px solid var(--rule)',
-                    borderRadius: 3,
-                    color: 'var(--ink-soft)',
-                  }}
+                  className="font-[var(--font-mono)] text-[11px] px-2 py-0.5 bg-[var(--bg-tint)] border border-[var(--rule)] rounded-[3px] text-[var(--ink-soft)]"
                 >
                   #{locale === 'fr' ? tag.nameFr : tag.nameEn}
                 </span>
               ))}
             </div>
 
-            {/* Navigation prev/next */}
-            <ContinueReading prev={adjacent.prev} next={adjacent.next} />
+            {/* TOC mobile — affiché entre tags et continue reading sur petit écran */}
+            {article.toc.length > 0 && (
+              <div className="md:hidden mt-8 p-4 bg-[var(--bg-tint)] rounded-[4px] border border-[var(--rule)]">
+                <p className="font-[var(--font-mono)] text-[10px] tracking-[.12em] uppercase text-[var(--ink-mute)] mb-3">
+                  {t('toc')}
+                </p>
+                <div className="flex flex-col gap-0">
+                  {article.toc.map(item => (
+                    <a
+                      key={item.id}
+                      href={`#${item.anchorId}`}
+                      className="font-[var(--font-ui)] text-[13px] text-[var(--ink-soft)] py-1.5 border-l border-[var(--rule)] pl-3 no-underline hover:text-[var(--ink)] transition-colors"
+                    >
+                      {locale === 'fr' ? item.labelFr : item.labelEn}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
 
-            {/* Commentaires */}
+            <ContinueReading prev={adjacent.prev} next={adjacent.next} />
             <CommentSection articleId={article.id} comments={comments} />
           </article>
 
-          {/* ─── Colonne droite : rail ─── */}
-          <aside>
-            <div
-              style={{
-                padding: 20,
-                background: 'var(--bg-tint)',
-                borderRadius: 4,
-                marginTop: 80,
-              }}
-            >
-              <p
-                style={{
-                  fontFamily: 'var(--font-mono)', fontSize: 10,
-                  letterSpacing: '.12em', textTransform: 'uppercase',
-                  color: 'var(--ink-mute)', marginBottom: 10,
-                }}
-              >
+          {/* ─── Rail — masqué < xl ─── */}
+          <aside className="hidden xl:block">
+            <div className="p-5 bg-[var(--bg-tint)] rounded-[4px] mt-20">
+              <p className="font-[var(--font-mono)] text-[10px] tracking-[.12em] uppercase text-[var(--ink-mute)] mb-2.5">
                 {t('tags')}
               </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <div className="flex flex-col gap-1.5">
                 {article.tags.map(tag => (
                   <span
                     key={tag.id}
-                    style={{
-                      fontFamily: 'var(--font-mono)', fontSize: 12,
-                      color: 'var(--ink-soft)',
-                    }}
+                    className="font-[var(--font-mono)] text-[12px] text-[var(--ink-soft)]"
                   >
                     #{locale === 'fr' ? tag.nameFr : tag.nameEn}
                   </span>
@@ -218,6 +170,7 @@ export default async function ArticlePage({ params }: Props) {
               </div>
             </div>
           </aside>
+
         </div>
       </div>
     </>

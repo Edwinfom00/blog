@@ -22,7 +22,9 @@ export function DashboardShell({ children, user }: { children: React.ReactNode; 
   const nav = [
     { href: '/dashboard', label: 'Vue d\'ensemble', icon: '◈' },
     { href: '/dashboard/articles', label: 'Articles', icon: '✦' },
-    { href: '/dashboard/comments', label: 'Commentaires', icon: '◆' },
+    { href: '/dashboard/projects', label: 'Projets', icon: '◆' },
+    { href: '/dashboard/comments', label: 'Commentaires', icon: '◇' },
+    { href: '/dashboard/settings', label: 'Paramètres', icon: '⚙' },
   ]
 
   return (

@@ -1,26 +1,21 @@
 'use client'
 
-import { useState } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { StaggerReveal } from '@/components/shared/StaggerReveal'
 import type { Article, ArticleTag } from '@/db/schema'
 
-interface ArticleWithTags extends Article {
-  tags: ArticleTag[]
-}
+interface ArticleWithTags extends Article { tags: ArticleTag[] }
 
 interface ArticleCardProps {
   article: ArticleWithTags
   index?: number
-  /** Afficher une bordure droite (entre colonnes) */
   showBorderRight?: boolean
 }
 
 export function ArticleCard({ article, index = 0, showBorderRight = true }: ArticleCardProps) {
   const locale = useLocale() as 'fr' | 'en'
   const t = useTranslations('article')
-  const [hovered, setHovered] = useState(false)
 
   const title = locale === 'fr' ? article.titleFr : article.titleEn
   const dek   = locale === 'fr' ? article.dekFr   : article.dekEn
@@ -35,108 +30,39 @@ export function ArticleCard({ article, index = 0, showBorderRight = true }: Arti
     <StaggerReveal delay={index * 70}>
       <Link
         href={`/journal/${article.slug}`}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          padding: '24px 20px 20px',
-          borderRight: showBorderRight ? '1px solid var(--rule)' : 'none',
-          background: hovered ? 'var(--bg-tint)' : 'transparent',
-          transition: 'background .15s',
-          textDecoration: 'none',
-          cursor: 'pointer',
-          height: '100%',
-          minHeight: 260,
-        }}
+        className={[
+          'group flex flex-col h-full min-h-[260px] p-5 sm:p-6',
+          'transition-colors duration-150 hover:bg-[var(--bg-tint)]',
+          'border-b border-[var(--rule)] lg:border-b-0',
+          showBorderRight ? 'lg:border-r lg:border-[var(--rule)]' : '',
+        ].join(' ')}
       >
-        {/* Meta row : №XX — date */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            fontFamily: 'var(--font-mono)',
-            fontSize: 11,
-            letterSpacing: '.08em',
-            textTransform: 'uppercase',
-            color: 'var(--ink-mute)',
-            marginBottom: 14,
-          }}
-        >
-          <span style={{ color: 'var(--accent)' }}>№ {article.issue}</span>
+        {/* Meta */}
+        <div className="flex justify-between font-[var(--font-mono)] text-[11px] tracking-[.08em] uppercase text-[var(--ink-mute)] mb-3">
+          <span className="text-[var(--accent)]">№ {article.issue}</span>
           <span>{formattedDate}</span>
         </div>
 
         {/* Titre */}
-        <h3
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 22,
-            fontWeight: 400,
-            letterSpacing: '-0.01em',
-            lineHeight: 1.18,
-            color: hovered ? 'var(--accent)' : 'var(--ink)',
-            margin: '0 0 10px',
-            transition: 'color .15s',
-          }}
-        >
+        <h3 className="font-[var(--font-display)] text-[22px] font-normal tracking-[-0.01em] leading-[1.18] text-[var(--ink)] group-hover:text-[var(--accent)] transition-colors duration-150 mb-2">
           {title}
         </h3>
 
         {/* Dek */}
-        <p
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontStyle: 'italic',
-            fontSize: 14,
-            lineHeight: 1.55,
-            color: 'var(--ink-soft)',
-            margin: '0 0 16px',
-            flex: 1,
-            display: '-webkit-box',
-            WebkitLineClamp: 4,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-          }}
-        >
+        <p className="font-[var(--font-display)] italic text-[14px] leading-[1.55] text-[var(--ink-soft)] mb-4 flex-1 line-clamp-4">
           {dek}
         </p>
 
-        {/* Foot : tags + read time */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginTop: 'auto',
-            paddingTop: 12,
-            borderTop: '1px solid var(--rule-soft)',
-          }}
-        >
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+        {/* Foot */}
+        <div className="flex justify-between items-center mt-auto pt-3 border-t border-[var(--rule-soft)]">
+          <div className="flex gap-1.5 flex-wrap">
             {tags.slice(0, 2).map(tag => (
-              <span
-                key={tag}
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 10,
-                  letterSpacing: '.04em',
-                  color: 'var(--ink-mute)',
-                }}
-              >
+              <span key={tag} className="font-[var(--font-mono)] text-[10px] tracking-[.04em] text-[var(--ink-mute)]">
                 #{tag}
               </span>
             ))}
           </div>
-          <span
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: 11,
-              color: hovered ? 'var(--accent)' : 'var(--ink-mute)',
-              whiteSpace: 'nowrap',
-              transition: 'color .15s',
-            }}
-          >
+          <span className="font-[var(--font-mono)] text-[11px] text-[var(--ink-mute)] group-hover:text-[var(--accent)] transition-colors whitespace-nowrap">
             {article.readMin} {t('min_read')} →
           </span>
         </div>
