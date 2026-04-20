@@ -1,0 +1,90 @@
+{
+  "nav": {
+    "writing": "Writing",
+    "projects": "Projects",
+    "about": "About",
+    "search": "Search",
+    "est": "Since 2021",
+    "open_search": "Open search",
+    "toggle_mode": "Toggle mode",
+    "switch_lang": "Passer en français"
+  },
+  "home": {
+    "kicker": "A web developer's journal",
+    "desc": "I write about the web, the tools I build, and the details that matter. Open, curious, occasionally opinionated.",
+    "cta": "Read latest",
+    "latest": "Latest writing",
+    "latest_kicker": "In this issue",
+    "all_writing": "All writing",
+    "featured": "Featured",
+    "projects_title": "What I'm building",
+    "projects_kicker": "Workshop",
+    "projects_desc": "Packages, sites, and experiments I keep alive, often at night.",
+    "all_projects": "All projects"
+  },
+  "article": {
+    "issue": "Issue",
+    "min_read": "min read",
+    "read": "Read",
+    "published": "Published",
+    "updated": "Updated",
+    "tags": "Topics",
+    "filed_under": "Filed under",
+    "toc": "Contents",
+    "by": "by",
+    "continue_reading": "Continue reading",
+    "next_article": "Next",
+    "prev_article": "Previous",
+    "back": "Back to journal"
+  },
+  "journal": {
+    "title": "Writing",
+    "desc": "All my articles, newest first.",
+    "issue_label": "No.",
+    "empty": "No articles yet."
+  },
+  "projects": {
+    "title": "Projects",
+    "desc": "Packages, sites, and experiments I keep alive.",
+    "status_live": "Live",
+    "status_new": "New",
+    "status_wip": "In progress",
+    "visit": "Visit"
+  },
+  "about": {
+    "title": "About",
+    "kicker": "Edwin Fom"
+  },
+  "comments": {
+    "title": "Comments",
+    "empty": "No comments yet. Be the first.",
+    "form_name": "Name",
+    "form_email": "Email",
+    "form_content": "Your comment",
+    "form_submit": "Post comment",
+    "form_sending": "Sending…",
+    "success": "Comment sent — it will appear after moderation.",
+    "error": "Something went wrong, please try again.",
+    "name_placeholder": "Your name",
+    "email_placeholder": "you@email.com",
+    "content_placeholder": "Write something…"
+  },
+  "cmdk": {
+    "placeholder": "Search the journal…",
+    "articles": "Articles",
+    "projects": "Projects",
+    "no_results": "No results.",
+    "hint_open": "open",
+    "hint_navigate": "navigate",
+    "hint_close": "close"
+  },
+  "footer": {
+    "colophon": "Set in Instrument Serif & Newsreader. Written in France.",
+    "rights": "Edwin Fom"
+  },
+  "errors": {
+    "not_found_title": "Page not found",
+    "not_found_desc": "This page doesn't exist or has been moved.",
+    "back_home": "Back to home"
+  }
+}

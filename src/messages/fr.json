@@ -1,0 +1,90 @@
+{
+  "nav": {
+    "writing": "Journal",
+    "projects": "Projets",
+    "about": "À propos",
+    "search": "Rechercher",
+    "est": "Depuis 2021",
+    "open_search": "Ouvrir la recherche",
+    "toggle_mode": "Changer le mode",
+    "switch_lang": "Switch to English"
+  },
+  "home": {
+    "kicker": "Journal d'un développeur web",
+    "desc": "J'écris sur le web, les outils que je construis, et les détails qui comptent. Ouvert, curieux, parfois de mauvaise foi.",
+    "cta": "Lire le dernier article",
+    "latest": "Derniers articles",
+    "latest_kicker": "Dans ce numéro",
+    "all_writing": "Tout le journal",
+    "featured": "À la une",
+    "projects_title": "Ce que je construis",
+    "projects_kicker": "Atelier",
+    "projects_desc": "Paquets, sites et expériences que je fais vivre, parfois la nuit.",
+    "all_projects": "Tous les projets"
+  },
+  "article": {
+    "issue": "Numéro",
+    "min_read": "min de lecture",
+    "read": "Lire",
+    "published": "Publié le",
+    "updated": "Mis à jour le",
+    "tags": "Thèmes",
+    "filed_under": "Classé dans",
+    "toc": "Sommaire",
+    "by": "par",
+    "continue_reading": "Continuer la lecture",
+    "next_article": "Article suivant",
+    "prev_article": "Précédent",
+    "back": "Retour au journal"
+  },
+  "journal": {
+    "title": "Journal",
+    "desc": "Tous mes articles, du plus récent au plus ancien.",
+    "issue_label": "N°",
+    "empty": "Aucun article pour le moment."
+  },
+  "projects": {
+    "title": "Projets",
+    "desc": "Paquets, sites et expériences que je fais vivre.",
+    "status_live": "En ligne",
+    "status_new": "Nouveau",
+    "status_wip": "En cours",
+    "visit": "Visiter"
+  },
+  "about": {
+    "title": "À propos",
+    "kicker": "Edwin Fom"
+  },
+  "comments": {
+    "title": "Commentaires",
+    "empty": "Pas encore de commentaire. Sois le premier.",
+    "form_name": "Nom",
+    "form_email": "E-mail",
+    "form_content": "Ton commentaire",
+    "form_submit": "Publier",
+    "form_sending": "Envoi…",
+    "success": "Commentaire envoyé — il sera visible après modération.",
+    "error": "Une erreur est survenue, réessaie.",
+    "name_placeholder": "Ton prénom",
+    "email_placeholder": "ton@email.com",
+    "content_placeholder": "Écris quelque chose…"
+  },
+  "cmdk": {
+    "placeholder": "Chercher dans le journal…",
+    "articles": "Articles",
+    "projects": "Projets",
+    "no_results": "Aucun résultat.",
+    "hint_open": "ouvrir",
+    "hint_navigate": "naviguer",
+    "hint_close": "fermer"
+  },
+  "footer": {
+    "colophon": "Composé avec Instrument Serif et Newsreader. Écrit en France.",
+    "rights": "Edwin Fom"
+  },
+  "errors": {
+    "not_found_title": "Page introuvable",
+    "not_found_desc": "Cette page n'existe pas ou a été déplacée.",
+    "back_home": "Retour à l'accueil"
+  }
+}
