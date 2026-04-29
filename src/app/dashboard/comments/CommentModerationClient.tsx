@@ -197,11 +197,6 @@ export function CommentModerationClient({ rows }: { rows: Row[] }) {
           ))}
         </div>
       )}
-
-      <style>{`
-        .mod-btn-approve:hover:not(:disabled) { background: #3FA26430 !important; }
-        .mod-btn-reject:hover:not(:disabled) { background: #C4453A20 !important; }
-      `}</style>
     </div>
   )
 }

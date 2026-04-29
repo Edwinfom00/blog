@@ -109,11 +109,6 @@ export default async function DashboardArticlesPage() {
           ))}
         </div>
       )}
-
-      <style>{`
-        .dash-btn-primary:hover { background: var(--accent) !important; }
-        .dash-article-row:hover { background: var(--bg-tint); }
-      `}</style>
     </div>
   )
 }

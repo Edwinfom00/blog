@@ -6,6 +6,16 @@ interface ArticleBodyProps {
   codeStyle?: 'paper' | 'minimal' | 'terminal'
 }
 
+/** Applique le formatage inline si le texte ne contient pas déjà de HTML */
+function renderInline(text: string): string {
+  if (/<[a-z][\s\S]*>/i.test(text)) return text // déjà du HTML
+  return text
+    .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
+    .replace(/`([^`\n]+)`/g, '<code>$1</code>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+}
+
 export function ArticleBody({ blocks, codeStyle = 'paper' }: ArticleBodyProps) {
   return (
     <div className="article-body">
@@ -13,7 +23,7 @@ export function ArticleBody({ blocks, codeStyle = 'paper' }: ArticleBodyProps) {
         switch (block.type) {
           case 'p':
             return (
-              <p key={i} dangerouslySetInnerHTML={{ __html: block.text }} />
+              <p key={i} dangerouslySetInnerHTML={{ __html: renderInline(block.text) }} />
             )
 
           case 'h2':
@@ -22,7 +32,7 @@ export function ArticleBody({ blocks, codeStyle = 'paper' }: ArticleBodyProps) {
                 key={i}
                 id={block.id}
                 dangerouslySetInnerHTML={{
-                  __html: typeof block.text === 'string' ? block.text : block.text.fr,
+                  __html: renderInline(typeof block.text === 'string' ? block.text : block.text.fr),
                 }}
               />
             )
@@ -30,7 +40,7 @@ export function ArticleBody({ blocks, codeStyle = 'paper' }: ArticleBodyProps) {
           case 'quote':
             return (
               <blockquote key={i}>
-                <p>{block.text}</p>
+                <p dangerouslySetInnerHTML={{ __html: renderInline(block.text) }} />
               </blockquote>
             )
 
@@ -38,7 +48,7 @@ export function ArticleBody({ blocks, codeStyle = 'paper' }: ArticleBodyProps) {
             return (
               <ul key={i}>
                 {block.items.map((item, j) => (
-                  <li key={j} dangerouslySetInnerHTML={{ __html: item }} />
+                  <li key={j} dangerouslySetInnerHTML={{ __html: renderInline(item) }} />
                 ))}
               </ul>
             )

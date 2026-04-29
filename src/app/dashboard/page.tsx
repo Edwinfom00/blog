@@ -111,11 +111,6 @@ export default async function DashboardPage() {
           ))}
         </div>
       </section>
-
-      <style>{`
-        .dash-stat-card:hover { background: var(--surface) !important; }
-        .dash-article-row:hover { background: var(--bg-tint); padding-left: 8px; padding-right: 8px; }
-      `}</style>
     </div>
   )
 }
