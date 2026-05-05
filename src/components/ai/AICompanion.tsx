@@ -19,7 +19,7 @@ export function AICompanion({ dock = 'br' }: { dock?: 'br' | 'bl' | 'side' }) {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   /* ⌘J pour ouvrir */
   useEffect(() => {
@@ -33,9 +33,9 @@ export function AICompanion({ dock = 'br' }: { dock?: 'br' | 'bl' | 'side' }) {
     return () => window.removeEventListener('keydown', handler)
   }, [])
 
-  /* Focus input à l'ouverture */
+  /* Focus textarea à l'ouverture */
   useEffect(() => {
-    if (open) setTimeout(() => inputRef.current?.focus(), 80)
+    if (open) setTimeout(() => textareaRef.current?.focus(), 80)
   }, [open])
 
   /* Scroll to bottom on new message */
@@ -174,34 +174,41 @@ export function AICompanion({ dock = 'br' }: { dock?: 'br' | 'bl' | 'side' }) {
             )}
           </div>
 
-          {/* Input */}
+          {/* Input — textarea avec bouton intégré */}
           <form
             className="ai-input-row"
             onSubmit={e => { e.preventDefault(); send() }}
           >
-            <input
-              ref={inputRef}
-              className="ai-input"
-              placeholder={isFr ? 'Pose ta question…' : 'Ask your question…'}
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              disabled={loading}
-            />
-            <button
-              type="submit"
-              className="ai-send-btn"
-              disabled={!input.trim() || loading}
-              aria-label={isFr ? 'Envoyer' : 'Send'}
-            >
-              <SendIcon />
-            </button>
+            <div className="ai-textarea-wrap">
+              <textarea
+                ref={textareaRef}
+                className="ai-textarea"
+                placeholder={isFr ? 'Pose ta question…' : 'Ask your question…'}
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                disabled={loading}
+                rows={5}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault()
+                    send()
+                  }
+                }}
+              />
+              <button
+                type="submit"
+                className="ai-send-btn ai-send-btn--inline"
+                disabled={!input.trim() || loading}
+                aria-label={isFr ? 'Envoyer' : 'Send'}
+              >
+                <SendIcon />
+              </button>
+            </div>
           </form>
 
           {/* Footer */}
           <div className="ai-foot">
-            <span>{isFr ? 'Propulsé par DeepSeek' : 'Powered by DeepSeek'}</span>
-            <span className="ai-foot-dot">·</span>
-            <span>{isFr ? 'Répond en se basant sur les articles' : 'Answers grounded in the articles'}</span>
+            <span>{isFr ? 'Entrée pour envoyer · Maj+Entrée pour sauter une ligne' : 'Enter to send · Shift+Enter for new line'}</span>
           </div>
         </div>
       )}

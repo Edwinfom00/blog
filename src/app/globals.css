@@ -1603,3 +1603,135 @@
 /* ─── Comments ─── */
 .mod-btn-approve:hover:not(:disabled) { background: #3FA26430 !important; }
 .mod-btn-reject:hover:not(:disabled) { background: #C4453A20 !important; }
+
+/* ─── AI textarea input ─── */
+.ai-textarea-wrap {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+}
+.ai-textarea {
+  flex: 1;
+  padding: 9px 44px 9px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: var(--surface);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--ink);
+  outline: none;
+  resize: none;
+  min-height: 38px;
+  max-height: 120px;
+  overflow-y: auto;
+  line-height: 1.5;
+  transition: border-color .15s;
+  width: 100%;
+  box-sizing: border-box;
+}
+.ai-textarea:focus { border-color: var(--accent); }
+.ai-textarea:disabled { opacity: .6; }
+.ai-send-btn--inline {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  width: 28px;
+  height: 28px;
+  border-radius: 3px;
+}
+
+/* ═══════════════════════════════════════════════
+   PAGES D'ERREUR (404, 500)
+   ═══════════════════════════════════════════════ */
+
+.error-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  background: var(--bg);
+}
+.error-page-inner {
+  max-width: 560px;
+  width: 100%;
+  text-align: center;
+}
+.error-number {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(120px, 22vw, 240px);
+  line-height: 1;
+  color: var(--accent);
+  opacity: .1;
+  user-select: none;
+  letter-spacing: -0.04em;
+  margin-bottom: -24px;
+}
+.error-rule {
+  width: 48px;
+  height: 3px;
+  background: var(--ink);
+  margin: 0 auto 32px;
+}
+.error-title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(28px, 4vw, 44px);
+  line-height: 1.1;
+  color: var(--ink);
+  margin: 0 0 16px;
+  letter-spacing: -0.01em;
+}
+.error-desc {
+  font-family: var(--font-read);
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin: 0 0 40px;
+}
+.error-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.error-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 2px;
+  transition: opacity .15s;
+}
+.error-link:hover { opacity: .7; }
+.error-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 20px;
+  background: var(--ink);
+  color: var(--bg);
+  border: none;
+  border-radius: 3px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .15s;
+}
+.error-btn:hover { background: var(--accent); }
+@media (max-width: 560px) {
+  .error-page { padding: 0 20px; }
+  .error-number { font-size: clamp(80px, 28vw, 160px); }
+}
