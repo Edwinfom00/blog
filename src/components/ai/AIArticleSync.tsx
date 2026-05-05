@@ -6,19 +6,16 @@ import { useAI } from './AIContext'
 interface AIArticleSyncProps {
   title: string
   dek: string
+  body?: string
 }
 
-/**
- * Composant invisible — synchronise le titre/dek de l'article courant
- * dans le contexte AI dès que la page article est montée.
- */
-export function AIArticleSync({ title, dek }: AIArticleSyncProps) {
+export function AIArticleSync({ title, dek, body }: AIArticleSyncProps) {
   const { setArticleContext, clearArticleContext } = useAI()
 
   useEffect(() => {
-    setArticleContext(title, dek)
+    setArticleContext(title, dek, body)
     return () => clearArticleContext()
-  }, [title, dek, setArticleContext, clearArticleContext])
+  }, [title, dek, body, setArticleContext, clearArticleContext])
 
   return null
 }

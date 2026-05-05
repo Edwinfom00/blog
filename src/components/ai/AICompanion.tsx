@@ -3,16 +3,18 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useLocale } from 'next-intl'
 import { useAI } from './AIContext'
+import { StreamingMessage } from './StreamingMessage'
 
 interface Message {
   role: 'user' | 'assistant'
   content: string
+  streaming?: boolean
 }
 
 export function AICompanion({ dock = 'br' }: { dock?: 'br' | 'bl' | 'side' }) {
   const locale = useLocale() as 'fr' | 'en'
   const isFr = locale === 'fr'
-  const { articleTitle, articleDek } = useAI()
+  const { articleTitle, articleDek, articleBody } = useAI()
 
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
@@ -58,36 +60,77 @@ export function AICompanion({ dock = 'br' }: { dock?: 'br' | 'bl' | 'side' }) {
     setInput('')
     setLoading(true)
     const next: Message[] = [...messages, { role: 'user', content: q }]
-    setMessages(next)
+    // Ajouter un message assistant vide qui va se remplir en streaming
+    const streamingMsg: Message = { role: 'assistant', content: '', streaming: true }
+    setMessages([...next, streamingMsg])
 
     try {
-      /* Appel DeepSeek via notre API route */
       const res = await fetch('/api/ai', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: next.map(m => ({ role: m.role, content: m.content })),
-          articleContext: articleTitle
-            ? `${articleTitle}${articleDek ? ' — ' + articleDek : ''}`
-            : undefined,
+          articleTitle,
+          articleDek,
+          articleBody,
           locale,
         }),
       })
 
       if (!res.ok) throw new Error('API error')
-      const data = await res.json()
-      setMessages(m => [...m, { role: 'assistant', content: data.reply }])
+
+      // Lire le stream SSE
+      const reader = res.body!.getReader()
+      const decoder = new TextDecoder()
+      let accumulated = ''
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        const chunk = decoder.decode(value, { stream: true })
+        for (const line of chunk.split('\n')) {
+          const trimmed = line.trim()
+          if (!trimmed.startsWith('data:')) continue
+          const data = trimmed.slice(5).trim()
+          if (data === '[DONE]') break
+          try {
+            const parsed = JSON.parse(data)
+            const token = parsed.token ?? ''
+            if (token) {
+              accumulated += token
+              // Mettre à jour le dernier message en temps réel
+              setMessages(prev => {
+                const updated = [...prev]
+                updated[updated.length - 1] = { role: 'assistant', content: accumulated, streaming: true }
+                return updated
+              })
+            }
+          } catch { /* skip */ }
+        }
+      }
+
+      // Marquer le streaming comme terminé
+      setMessages(prev => {
+        const updated = [...prev]
+        updated[updated.length - 1] = { role: 'assistant', content: accumulated, streaming: false }
+        return updated
+      })
     } catch {
-      setMessages(m => [...m, {
-        role: 'assistant',
-        content: isFr
-          ? "Je n'ai pas pu répondre pour l'instant. Réessaye dans un instant."
-          : "I couldn't answer right now. Try again in a moment.",
-      }])
+      setMessages(prev => {
+        const updated = [...prev]
+        updated[updated.length - 1] = {
+          role: 'assistant',
+          content: isFr
+            ? "Je n'ai pas pu répondre pour l'instant. Réessaye dans un instant."
+            : "I couldn't answer right now. Try again in a moment.",
+          streaming: false,
+        }
+        return updated
+      })
     } finally {
       setLoading(false)
     }
-  }, [input, loading, messages, isFr, articleTitle])
+  }, [input, loading, messages, isFr, articleTitle, articleDek, articleBody, locale])
 
   const dockPos = dock === 'bl' ? 'ai-bl' : dock === 'side' ? 'ai-side' : 'ai-br'
 
@@ -157,14 +200,18 @@ export function AICompanion({ dock = 'br' }: { dock?: 'br' | 'bl' | 'side' }) {
                 {m.role === 'assistant' && (
                   <span className="ai-avatar" aria-hidden><SparkleIcon size={11} /></span>
                 )}
-                <div
-                  className="ai-bubble-msg"
-                  dangerouslySetInnerHTML={{ __html: m.content.replace(/\n/g, '<br/>') }}
-                />
+                <div className="ai-bubble-msg">
+                  {m.role === 'assistant' ? (
+                    <StreamingMessage content={m.content} streaming={m.streaming} />
+                  ) : (
+                    m.content
+                  )}
+                </div>
               </div>
             ))}
 
-            {loading && (
+            {/* Dots uniquement si loading ET pas encore de contenu streamé */}
+            {loading && messages[messages.length - 1]?.content === '' && (
               <div className="ai-msg ai-msg-assistant">
                 <span className="ai-avatar" aria-hidden><SparkleIcon size={11} /></span>
                 <div className="ai-bubble-msg ai-thinking">

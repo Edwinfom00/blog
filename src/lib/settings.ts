@@ -26,14 +26,14 @@ export const DEFAULT_ABOUT: AboutSettings = {
 
 Ce journal est l'endroit où je consigne ce que j'apprends, ce que je construis, et les questions qui me trottent dans la tête. Pas de newsletter, pas de notifications push. Un article quand j'ai quelque chose à dire — et seulement à ce moment-là.
 
-J'ai commencé à écrire ici en 2021, d'abord pour moi, puis pour les autres. Les sujets varient : architecture front-end, performance, typographie web, outils de développement, et parfois des réflexions plus larges sur le métier.`,
+J'ai commencé à écrire ici en 2024, d'abord pour moi, puis pour les autres. Les sujets varient : architecture front-end, performance, typographie web, outils de développement, et parfois des réflexions plus larges sur le métier.`,
   bioEn: `I'm Edwin Fom, a web developer based in Cameroon. I work primarily with Next.js, TypeScript, and a strong appreciation for typographic detail and interfaces that breathe.
 
 This journal is where I write about what I learn, what I build, and the questions that keep me up. No newsletter, no push notifications. One article when I have something to say — and only then.
 
-I started writing here in 2021, first for myself, then for others. Topics vary: front-end architecture, performance, web typography, developer tooling, and occasionally broader reflections on the craft.`,
-  taglineFr: 'Développeur web, auteur de paquets open-source, et rédacteur de ce journal depuis 2021.',
-  taglineEn: 'Web developer, open-source package author, and writer of this journal since 2021.',
+I started writing here in 2024, first for myself, then for others. Topics vary: front-end architecture, performance, web typography, developer tooling, and occasionally broader reflections on the craft.`,
+  taglineFr: 'Développeur web, auteur de paquets open-source, et rédacteur de ce journal depuis 2024.',
+  taglineEn: 'Web developer, open-source package author, and writer of this journal since 2024.',
   links: [
     { label: 'edwinfom.dev', href: 'https://www.edwinfom.dev/' },
     { label: 'packages.edwinfom.dev', href: 'https://packages.edwinfom.dev/' },

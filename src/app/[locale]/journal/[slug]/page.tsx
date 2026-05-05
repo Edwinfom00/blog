@@ -43,6 +43,15 @@ export default async function ArticlePage({ params }: Props) {
   const dek   = locale === 'fr' ? article.dekFr   : article.dekEn
   const body  = (locale === 'fr' ? article.bodyFr : article.bodyEn) as Block[]
 
+  // Extraire le texte brut pour le contexte IA (max 3000 chars)
+  const bodyText = body.map(b => {
+    if (b.type === 'p') return b.text.replace(/<[^>]+>/g, '')
+    if (b.type === 'h2') return typeof b.text === 'string' ? b.text : b.text[locale as 'fr' | 'en']
+    if (b.type === 'quote') return `"${b.text}"`
+    if (b.type === 'list') return b.items.map(i => i.replace(/<[^>]+>/g, '')).join('. ')
+    return ''
+  }).filter(Boolean).join('\n\n').slice(0, 3000)
+
   const formattedDate = new Intl.DateTimeFormat(
     locale === 'fr' ? 'fr-FR' : 'en-GB',
     { day: 'numeric', month: 'long', year: 'numeric' }
@@ -51,7 +60,7 @@ export default async function ArticlePage({ params }: Props) {
   return (
     <>
       <ReadingProgress />
-      <AIArticleSync title={title} dek={dek} />
+      <AIArticleSync title={title} dek={dek} body={bodyText} />
 
       {/* ─── Wrapper ─── */}
       <div className="max-w-[1320px] mx-auto px-4 sm:px-8">
